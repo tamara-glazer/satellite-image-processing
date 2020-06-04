@@ -39,20 +39,31 @@ GEOJSONS = ['train-borde_rural.geojson', 'train-borde_soacha.geojson',
 # Note that all geojsonn names are the object names as well, so to access 
 # call: https://mapping-disaster-risk.s3.amazonaws.com/train-borde_rural.geojson
 
+pwex = pywren.default_executor()
 
-### SERIAL: Get all GEOJSONS
+
+# Get all JSONS
 def get_geojsons(geojsons=GEOJSONS):
     '''
     Load geojson, extract relevant information, return as a dictionary.
     '''
-    s3 = boto3.resource('s3')
+    s3 = boto3.client('s3')
     results = []
     for item in geojsons:
-        obj = s3.Object(BUCKET, item)
+        obj = s3.get_object(Bucket=BUCKET, Key=item)
         geo_json = json.load(obj.get()['Body'])
         results.append(geo_json)
 
     return results
+
+
+def get_geojsons_paralell():
+    '''
+    '''
+    futures = pwex.map(get_geojsons, GEOJSONS)
+    geojsons = pywren.get_all_results(futures)
+
+    return geojsons
 
 
 ### FUNCTION TO BE PARALLELIZED: Create new, relevant jsons
@@ -79,14 +90,8 @@ def make_polygons_parallel():
     Parallelized obtaining of geojsons.
     '''
     results = get_geojsons()
-    print('got results')
-
-    # Parallelize creating the smaller dictionaries
-    pwex = pywren.default_executor()
     futures = pwex.map(make_polygons, results)
-    print('got futures')
     got_futures = pywren.get_all_results(futures)
-    print('got results back')
 
     return got_futures
 
@@ -109,18 +114,26 @@ def get_rooftop_array_after_mask():
 ### PARALLEL: Convert to graysacle
 def convert_grayscale():
 
+    pass
+
 
 ### PARALLEL: Crop center
 def crop_center():
+
+    pass
 
 
 ### PARALLEL: Calculate zonal statistics
 def calculate_zonal_stats():
 
+    pass
+
 
 ### Bring everything together, time the process, and return the final dataframe of zonal stats
 def build_df():
 
+    pass
+
 
 if __name__ == '__main__':
-    #TBD
+    pass
