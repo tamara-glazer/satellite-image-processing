@@ -39,27 +39,29 @@ GEOJSONS = ['train-borde_rural.geojson', 'train-borde_soacha.geojson',
 # Note that all geojsonn names are the object names as well, so to access 
 # call: https://mapping-disaster-risk.s3.amazonaws.com/train-borde_rural.geojson
 
-pwex = pywren.default_executor()
 
 
 # Get all JSONS
-def get_geojsons(geojsons=GEOJSONS):
+def get_geojsons(geojson):
     '''
     Load geojson, extract relevant information, return as a dictionary.
     '''
-    s3 = boto3.client('s3')
-    results = []
-    for item in geojsons:
-        obj = s3.get_object(Bucket=BUCKET, Key=item)
-        geo_json = json.load(obj.get()['Body'])
-        results.append(geo_json)
+    
+    try:
+        s3 = boto3.client('s3', 'us-east-1')
+        obj = s3.get_object(Bucket='mapping-disaster-risk', Key=geojson)
+        geo_json = json.load(obj['Body'])
+    except Exception as e:
+        return e
 
-    return results
+    return geo_json
 
 
 def get_geojsons_paralell():
     '''
     '''
+
+    pwex = pywren.default_executor()
     futures = pwex.map(get_geojsons, GEOJSONS)
     geojsons = pywren.get_all_results(futures)
 
