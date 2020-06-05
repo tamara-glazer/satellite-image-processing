@@ -26,27 +26,21 @@ To expedite our feature generation process, were able to incorporate a variety o
 
 Next, we leverage a multithreading technique (ThreadPool) to upload 7 GeoJSONs to the same AWS S3 bucket. This is a parallel approach that allowed us to run multiple threads of execution within an operating system, thereby maximizing the capacity of our machine’s CPUs. As a result of these processes, we are both able to access the files using the Boto3, the AWS SDK for Python.  
 
-For the remainder of our project, we parallelize image interaction, pre-processing, and feature generation for our machine learning models using   
+For the remainder of our project, we parallelize image access, pre-processing, and feature generation for our machine learning pipeline using Pywren on top of AWS Lambda. We selected this approach for several reasons, including that it is optimized for computational imaging, event-driven, and because it is a serverless compute service that automatically manages underlying compute resources.    
 
 
 -------NOTES FOLLOW-------
 
 
+Challenges to discuss:  
 
-Segmentation, Pre-Processing, Feature Generation: Parallelize raster image computations using Pywren on top of AWS Lambda (optimized for computational imaging)
+-interacting with large files when AWS Lambda has 512MB temp storage limit, making it difficult to map geojsons to the files  
 
-We propose parallelizing our workflow using a serverless solution such as Amazon Lambda via PyWren. We will also explore the feasibility and performance gains of using Amazon EMR, which uses EC2 instances and hosts data using S3 buckets. Time permitting, we are excited to explore whether we can incorporate Apache Spark into our workflow, which has the benefit of supporting scalable machine learning algorithms. Given the unique nature of our project, James Jensen and I received permission from Professor Clindaniel to work as a team on this effort.
-Challenges: uploading large file, AWS Lambda has 512MB temp storage limit, making it difficult to map geojsons to the files
-Findings
+-tried working with rio-tiler and lambda-tiler in order to pull specific tiles one by one into AWS lambda, but couldn’t figure out mercador tile coordiantes  
 
-Graphs?
+-solution: map locally and then passed along the smaller tif files to lambda to process embarrassingly parallely tasks
 
-GOALS:
--Describe social science research problem
--Explain how code helps to solve that problem
--tried working with rio-tiler and lambda-tiler in order to pull specific tiles one by one into AWS lambda, but couldn’t figure out mercador tile coordiantes
+## Findings
 
--first we tried to upload the COG files, too large, then we tried to upload masks, but didn’t know the right coordinates, so then we mapped locally and then passed along the smaller tif files to lambda to process embarrassingly parallely
+-Graph comparing compute speed? What is our benchmark for success?
 
-
-Benchmark?
