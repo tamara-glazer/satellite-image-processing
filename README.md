@@ -31,16 +31,15 @@ For the remainder of our project, we parallelize image access, pre-processing, a
 
 -------NOTES FOLLOW-------
 
+Workflow/Challenges to Discuss
 
-Challenges to discuss:  
-
--interacting with large files when AWS Lambda has 512MB temp storage limit, making it difficult to map geojsons to the files  
-
--tried working with rio-tiler and lambda-tiler in order to pull specific tiles one by one into AWS lambda, but couldn’t figure out mercador tile coordiantes  
-
--solution: map locally and then passed along the smaller tif files to lambda to process embarrassingly parallely tasks
+1.	Using Pywren (parallel), get GEOJSON from AWS bucket
+2.	In Parallel, extract necessary information from GEOJSONs (make polygons), since we can’t do coordinate projections on AWS lambda. Also this is a quick process.
+3.	Serially transform coordinates mask polygons to tiff files, since these are too large to work with on AWS lambda and also Proj is not natively on AWS. Very challenging to install packages on AWS that aren’t present natively, so we had to do the projections of coordinates locally. Also Discovered that there is a 512MB max temp storage limit to files on Lambda. Explored solutions such as leveraging rio-tiler and lambda-tiler to pull specific tiles as needed, but unfortunately, we didn’t have the mercador tile coordinates in the geojson to accomplish this.
+a.	However, AWS still hasn’t addressed the needs of friendly steps to bring in non-native python packages such as Pandas. Currently, you either have to zip up your Lambda function and Linux compatible dependencies, or upload your dependencies as a Lambda Layers. To add extra complexities, some of the Python packages need to compile C or C++ extensions (packages such as Numpy and Pandas).
+4.	In parallel, send each smaller image array to AWS lambda functions to calculate zonal statistics for each image band. This is embarrassingly parallel so ideal (median value for each band) – passes a dictionary
+5.	Construct a dataframe of all the output (how many rows are we talking?)
 
 ## Findings
 
 -Graph comparing compute speed? What is our benchmark for success?
-
