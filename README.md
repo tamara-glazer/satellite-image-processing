@@ -52,7 +52,4 @@ Once we have a matrix representing each rooftop, we then parallelize image pre-p
 
 ## Findings
 
-The current state of our notebook -- parallel_roofs -- demonstrates the entire pipeline for a single tif file. Our final output, a dataframe, contains features for 159 buildings. The total run time for our parallel processes range from 9.66 seconds to 1.1 minutes. However, we can see that this is in large part due to connection wait times. The actual CPU time -- the time it takes to execute -- ranges between 717ms and 8.14 seconds. Regardless, even for a single tif file this method has proven to be significantly faster that our serial attempt.
-
-
-
+The current state of our notebook -- parallel_roofs -- demonstrates the entire pipeline executed for a single tif file. Our final output is a dataframe that contains features for 159 buildings as well as the material of each rooftop (label for future testing). The total run time for our parallel processes range from 9.66 seconds to 1.1 minutes. However, we can see that this is in large part due to connection wait times. The actual CPU time -- the time it takes to execute -- ranges between 717ms and 8.14 seconds. Regardless, even for a single tif file this method has proven to be significantly faster that our original implementation.
