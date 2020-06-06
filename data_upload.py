@@ -80,7 +80,6 @@ def download_file(client, bucket, object_name, new_file_name):
                          Key=object_name)
 
 
-# Threads ---> US THIS FOR GEOJSONS
 def upload_geojsons(bucket_name=BUCKET, files=GEOJSONS):
     '''
     Use Python's multi-processing module, which offers remote and local
@@ -94,7 +93,6 @@ def upload_geojsons(bucket_name=BUCKET, files=GEOJSONS):
     pool.map(upload_file, files)
 
 
-# Multi-processing (concurrency) threads (parallelism) ---> USE THIS FOR TIFS
 def upload_tifs(files=TIFS):
     '''
     Use TransferConfig to configure a multi-part upload and use threading in
@@ -117,7 +115,14 @@ def upload_tifs(files=TIFS):
                                    Config=config)
 
 
+def main(tifs=TIFS, geojsons=GEOJSONS):
+    '''
+    Complete full data uploading process prior to data processing.
+    '''
+    upload_tifs(tifs)
+    upload_geojsons(BUCKET, GEOJSONS)
+
+
 if __name__ == '__main__':
-    #upload_geojsons()
-    upload_tifs(['castries_ortho-cog.tif'])
+    main()
 
