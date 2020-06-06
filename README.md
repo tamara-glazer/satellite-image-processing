@@ -22,15 +22,23 @@ Using our large-scale computing strategies, we seek to parallelize a majority of
 
 ## Large-Scale Computing Approaches
 
+###Data Transfer & Sharing
+
 To expedite our feature generation process, we are able to incorporate a variety of large-scale computing techniques into our data processing workflow. We begin by using a multi-part uploading technique (TransferConfig) to concurrently upload 7 large tif files to an AWS S3 bucket, ranging from 1.65 to 9.96 GB in size. We use this approach for two main reasons. First, threading of large image files can result in future data access challenges using serverless solutions such as AWS Lambda, making a concurrent solution preferable. Second, multi-part transfers are necessary when an individual file size exceeds a specified S3 bucket threshold, which we encountered. We were able to tune the maximum number of concurrent S3 API transfer operations based on our connection speed using the max_concurrency attribute.  
   
 Next, we leverage a multi-threading technique (ThreadPool) to upload 7 GeoJSONs to the same AWS S3 bucket. This is a parallel approach that allows us to run multiple threads of execution within an operating system, thereby maximizing the capacity of our machines’ CPUs. As a result of these operations, we are both able to access all necessary files using Boto3, the AWS SDK for Python.  
+
+###Image Pre-Processing
   
 For the remainder of our project, we parallelize image access, pre-processing, and feature generation for our machine learning pipeline using pywren on top of AWS Lambda. We selected this approach for several reasons, including that it is optimized for computational imaging, event-driven, and because it is a serverless compute service that automatically manages underlying compute resources. We begin by using pywren to access the GeoJSONs from the S3 bucket in parallel. GeoJSONs represent individual building footprints, and store information such as the building ID, roof material (for testing), and coordinates outlining each individual building. Next, we use pywren to extract an abbreviated dictionary of relevant information about each rooftop in parallel.  
 
 We then execute an affine transformation on the coordinates embedded within each dictionary based on the coordinate reference system in the building’s corresponding tif file. We perform this step because coordinates map differently on different locations of the world based on the earth’s natural curvature. While we had hoped to parallelize this step in the pipeline, we discovered that it is very challenging to bring non-native python packages into AWS Lambda and therefore decided to conduct this step serially using pyproj. Currently, importing a custom package involves zipping up a Lambda function and Linux compatible dependencies or uploading dependencies to Lambda Layers, which is beyond the scope of this course.  
+
+###Image Segmentation
   
 Following this step, we extract pixel-value arrays for each satellite band of an image given a dictionary containing the transformed coordinates for each rooftop. Each band contains information on surface reflectance from different ranges of the electromagnetic spectrum. In this case, each file contains four bands. Within each band matrix, each value represents a pixel and is assigned a number from 0-255, with larger numbers representing more of that color. Again, while we had hoped to perform this step using AWS Lambda, we discovered that there is a 512MB maximum temporary storage limit on files on Lambda, and the tif files significantly surpass this limit. We explored and experimented with solutions such as leveraging a rasterio plugin called rio-tiler or lambda-tiler to pull in individual Mercator tiles from COGs as needed, but unfortunately could not transform the provided coordinates into Mercator values to accomplish this task. In the future, this would be an interesting task to continue working through.  
+
+###Feature Generation
   
 Once we have a matrix representing each rooftop, we then parallelize the image pre-processing and feature generation process. Specifically, we use pywren to send each image array to an AWS Lambda function to calculate metrics such as zonal statistics for each image band. This process is embarrassingly parallel and thus ideal for a serverless solution. Dictionaries are returned containing features as well as the actual material for evaluation purposes. Finally, these feature sets are assembled into a pandas DataFrame that can be fed into our unsupervised machine learning pipeline.  
 
