@@ -14,7 +14,7 @@ Earlier this year, we took a course in Unsupervised Machine Learning and used ou
 
 The data consist of seven satellite images at 4cm resolution stored as Cloud Optimized GeoTIFFs (COGs), totaling over 60 GB, as well as accompanying building footprints stored as GeoJSONs. All data are provided by WeRobotics and the World Bank Global Program for Resilient Housing. COGs can be hosted and accessed on an HTTP server. They have the potential to enable efficient workflows since HTTP get range requests can draw only upon necessary parts of each file. Without prior knowledge of large-scale computing strategies, however, we previously completed coordinate transformations, image masking and segmentation, image pre-processing, and feature generation serially. Further, we completed the entire analysis on our personal machines using locally stored images, making it difficult to share insights and access the data remotely. As a result of these challenges, accessing and downloading the data took approximately 6 hours, and data processing took well over 40 hours to complete.  
 
-![GeoTIFF from Colombia](/tif_image.png)
+![GeoTIFF from Colombia](/tif_image.png=100x100)
 
 ## Social Science Research Question
 
