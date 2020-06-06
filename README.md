@@ -14,6 +14,10 @@ Earlier this year, we took a course in Unsupervised Machine Learning and used ou
 
 The data consist of seven satellite images at 4cm resolution stored as Cloud Optimized GeoTIFFs (COGs), totaling over 60 GB, as well as accompanying building footprints stored as GeoJSONs. All data are provided by WeRobotics and the World Bank Global Program for Resilient Housing. COGs can be hosted and accessed on an HTTP server. They have the potential to enable efficient workflows since HTTP get range requests can draw only upon necessary parts of each file. Without prior knowledge of large-scale computing strategies, however, we previously completed coordinate transformations, image masking and segmentation, image pre-processing, and feature generation serially. Further, we completed the entire analysis on our personal machines using locally stored images, making it difficult to share insights and access the data remotely. As a result of these challenges, accessing and downloading the data took approximately 6 hours, and data processing took well over 40 hours to complete.  
 
+<p align="center">
+  <img src="tif_image.png" width="230" height="330">
+</p>
+
 ## Social Science Research Question
 
 Our Social Science Research Question is the following: Can large-scale computing strategies be leveraged to expedite high-resolution satellite image acquisition and pre-processing to facilitate machine learning and improve disaster preparedness?  
@@ -36,7 +40,11 @@ We then execute an affine transformation on the coordinates embedded within each
 
 ### Image Segmentation
   
-Following this step, we extract pixel-value arrays for each satellite band of an image given a dictionary containing the transformed coordinates for each rooftop. Each band contains information on surface reflectance from different ranges of the electromagnetic spectrum. In this case, each file contains four bands. Within each band matrix, each value represents a pixel and is assigned a number from 0-255, with larger numbers representing more of that color. Again, while we had hoped to perform this step using AWS Lambda, we discovered that there is a 512 MB maximum temporary storage limit for files on Lambda, and the tif files significantly surpass this limit. We explored and experimented with solutions such as leveraging a rasterio plugin called rio-tiler or lambda-tiler to pull in individual Mercator tiles from COGs as needed, but unfortunately could not transform the provided coordinates into Mercator values to accomplish this task. In the future, this would be an interesting approach to pursue.  
+Following this step, we extract pixel-value arrays for each satellite band of an image given a dictionary containing the transformed coordinates for each rooftop. Each band contains information on surface reflectance from different ranges of the electromagnetic spectrum. In this case, each file contains four bands. Within each band matrix, each value represents a pixel and is assigned a number from 0-255, with larger numbers representing more of that color. Again, while we had hoped to perform this step using AWS Lambda, we discovered that there is a 512 MB maximum temporary storage limit for files on Lambda, and the tif files significantly surpass this limit. We explored and experimented with solutions such as leveraging a rasterio plugin called rio-tiler or lambda-tiler to pull in individual Mercator tiles from COGs as needed, but unfortunately could not transform the provided coordinates into Mercator values to accomplish this task. In the future, this would be an interesting approach to pursue. 
+
+<p align="center">
+  <img src="band_image.png" width="450" height="250">
+</p> 
 
 ### Feature Generation
   
