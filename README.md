@@ -16,7 +16,7 @@ The data consist of seven satellite images at 4cm resolution stored as Cloud Opt
 
 <p align="center">
   <img src="tif_image.png" width="230" height="330">
- </p>
+</p>
 
 ## Social Science Research Question
 
@@ -40,7 +40,11 @@ We then execute an affine transformation on the coordinates embedded within each
 
 ### Image Segmentation
   
-Following this step, we extract pixel-value arrays for each satellite band of an image given a dictionary containing the transformed coordinates for each rooftop. Each band contains information on surface reflectance from different ranges of the electromagnetic spectrum. In this case, each file contains four bands. Within each band matrix, each value represents a pixel and is assigned a number from 0-255, with larger numbers representing more of that color. Again, while we had hoped to perform this step using AWS Lambda, we discovered that there is a 512 MB maximum temporary storage limit for files on Lambda, and the tif files significantly surpass this limit. We explored and experimented with solutions such as leveraging a rasterio plugin called rio-tiler or lambda-tiler to pull in individual Mercator tiles from COGs as needed, but unfortunately could not transform the provided coordinates into Mercator values to accomplish this task. In the future, this would be an interesting approach to pursue.  
+Following this step, we extract pixel-value arrays for each satellite band of an image given a dictionary containing the transformed coordinates for each rooftop. Each band contains information on surface reflectance from different ranges of the electromagnetic spectrum. In this case, each file contains four bands. Within each band matrix, each value represents a pixel and is assigned a number from 0-255, with larger numbers representing more of that color. Again, while we had hoped to perform this step using AWS Lambda, we discovered that there is a 512 MB maximum temporary storage limit for files on Lambda, and the tif files significantly surpass this limit. We explored and experimented with solutions such as leveraging a rasterio plugin called rio-tiler or lambda-tiler to pull in individual Mercator tiles from COGs as needed, but unfortunately could not transform the provided coordinates into Mercator values to accomplish this task. In the future, this would be an interesting approach to pursue. 
+
+<p align="center">
+  <img src="band_image.png" width="400" height="150">
+</p> 
 
 ### Feature Generation
   
