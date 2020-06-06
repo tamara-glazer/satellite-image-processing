@@ -24,9 +24,9 @@ Using large-scale computing strategies, we seek to parallelize a majority of com
 
 ### Data Transfer & Sharing
 
-To expedite feature generation, we are able to incorporate a variety of new techniques into our data processing workflow. We begin by using a multi-part uploading technique (TransferConfig) to concurrently upload 7 large tif files to an AWS S3 bucket, ranging from 1.65 to 9.96 GB in size. We use this approach for two main reasons. First, threading of large image files can result in future data access challenges using serverless solutions such as AWS Lambda, making a concurrent solution preferable. Second, multi-part transfers are necessary when an individual file size exceeds a specified S3 bucket threshold, which we encountered. We were able to tune the maximum number of concurrent S3 API transfer operations based on our connection speed using the max_concurrency attribute.  
+To expedite feature generation, we are able to incorporate a variety of new techniques into our data processing workflow. We begin by using a multi-part uploading technique (TransferConfig) to concurrently upload 7 large tif files to an AWS S3 bucket, ranging from 1.65 to 9.96 GB in size. Multi-part transfers are necessary when an individual file size exceeds a specified S3 bucket threshold, which we encountered. We were able to tune the maximum number of concurrent S3 API transfer operations based on our connection speed using the max_concurrency attribute.  
   
-Next, we leverage a multi-threading technique (ThreadPool) to upload 7 GeoJSONs to the same AWS S3 bucket. This is a parallel approach that allows us to run multiple threads of execution within an operating system, thereby maximizing the capacity of available CPUs. As a result of these operations, we are both able to access all necessary files using Boto3, the AWS SDK for python.  
+Next, we leverage a multi-threading technique (ThreadPool) to upload 7 GeoJSONs to the same AWS S3 bucket. This is a parallel approach that allows us to run multiple threads of execution within an operating system, thereby maximizing the capacity of available CPUs. As a result of these operations, we are able to access all necessary files using Boto3, the AWS SDK for python.  
 
 ### Image Pre-Processing
   
